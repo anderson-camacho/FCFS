@@ -12,6 +12,8 @@ public class Fcfs {
 
     int numeroProcesosAgragaods = 0;
 
+    boolean banderaFinal = true;
+
     public void ejecucion() {
         this.colaDeListos.add(crearProceso(0));
         System.out.println("--->LOG:Iniciamos el SO, se prendio esta joda");
@@ -24,12 +26,13 @@ public class Fcfs {
         imprimirColaListos();
         procesador();
 
-        while (true) {
+        while (banderaFinal) {
             espera(1, "Ejecucion General");
             ordenarLista();
             imprimirColaListos();
-
         }
+        tiempoVuelta();
+        tiempoEspera();
     }
 
     public void procesador() {
@@ -56,6 +59,7 @@ public class Fcfs {
                 System.out.println("El proceso" + proceso.getNombre() + "termina con los sigueintes datos.");
                 System.out.println(proceso);
             }
+            this.banderaFinal = false;
         });
         thread.start();
     }
@@ -142,5 +146,33 @@ public class Fcfs {
                 return Integer.compare(proceso1.getTiempoLlegada(), proceso2.getTiempoLlegada());
             }
         });
+    }
+
+    public void tiempoVuelta(){
+        int sumatoria = 0;
+        int contador = 0;
+        int tiempo = 0;
+        for (Proceso proceso : this.colaDeListos) {
+            tiempo = proceso.getTiempoFinalizacionEjecucion() - proceso.getTiempoLlegada();
+            System.out.println("Tiempo de vuelta para el proceso " + proceso.getNombre() + " es:" + tiempo);
+            sumatoria += tiempo;
+            contador++;
+        }
+        int tiempoProm = sumatoria/contador;
+        System.out.println("El tiempo de vuelta promedio fue de " + tiempoProm);
+    }
+
+    public void tiempoEspera(){
+        int sumatoria = 0;
+        int contador = 0;
+        int tiempo = 0;
+        for (Proceso proceso : this.colaDeListos) {
+            tiempo = proceso.getTiempoInicioEjecucion() - proceso.getTiempoLlegada();
+            System.out.println("Tiempo de vuelta para el proceso " + proceso.getNombre() + " es:" + tiempo);
+            sumatoria += tiempo;
+            contador++;
+        }
+        int tiempoProm = sumatoria/contador;
+        System.out.println("El tiempo de vuelta espera fue de " + tiempoProm);
     }
 }
